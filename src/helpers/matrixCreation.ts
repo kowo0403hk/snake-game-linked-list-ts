@@ -1,3 +1,4 @@
+// canvas creation function
 export const createMatrix = (CANVAS_SIZE: number): number[][] => {
   let counter = 1;
   const canvas = [];

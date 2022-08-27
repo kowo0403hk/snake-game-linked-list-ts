@@ -1,7 +1,8 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import { Node, SinglyLinkedList } from "../helpers/linked-listClasses";
 import { createMatrix } from "../helpers/matrixCreation";
+import { getDirectionFromKey, DIRECTION } from "../helpers/movement";
 
 const CanvasContainer = styled.div`
   outline: 2px solid rgb(134, 154, 189);
@@ -37,6 +38,22 @@ const Canvas: FC = () => {
 
   // contains the snake body
   const [snake, setSnake] = useState(new SinglyLinkedList(45));
+
+  // handle the movement direction
+  const [direction, setDirection] = useState(DIRECTION.RIGHT);
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    const newDirection = getDirectionFromKey(e.key);
+    const isValidDirection = newDirection !== "";
+
+    if (!isValidDirection) setDirection(newDirection);
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", (e: KeyboardEvent) => {
+      handleKeydown(e);
+    });
+  }, []);
 
   // create the rows and cells for the canvas
   const mappedCanvas = canvas.map((row, rowIndex) => {
