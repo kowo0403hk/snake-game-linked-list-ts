@@ -1,8 +1,8 @@
 export class Node {
-  value: any;
+  value: Cell;
   next: any;
 
-  constructor(value: any) {
+  constructor(value: Cell) {
     this.value = value;
     this.next = null;
   }
@@ -16,5 +16,17 @@ export class SinglyLinkedList {
     const node = new Node(value);
     this.head = node;
     this.tail = node;
+  }
+}
+
+export class Cell {
+  row: number;
+  col: number;
+  cell: any;
+
+  constructor(row: number, col: number, value: number) {
+    this.row = row;
+    this.col = col;
+    this.cell = value;
   }
 }
