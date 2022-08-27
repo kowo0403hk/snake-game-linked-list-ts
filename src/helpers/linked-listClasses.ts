@@ -8,7 +8,7 @@ export class Node {
   }
 }
 
-export class SinglyLinkedList {
+export class LinkedList {
   head: Node;
   tail: Node;
 
