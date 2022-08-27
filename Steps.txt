@@ -1,0 +1,23 @@
+1. [] Create a canvas
+  - [] Matrix
+
+2. [] Create snake
+  - [] Singly Linked-List
+  - [] Handle snake growth
+  - [] Handle snake direction reversal (reverse linked list)
+
+3. [] Styles
+  - [] Snake cells
+  - [] Apple cells
+
+4. [] Direction input (up, down, left, right) events
+
+5. [] Movement events
+
+6. [] Apple consumption
+
+7. [] Death event
+
+8. [] Score event
+
+9. [] Game start and game reset events
