@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { LinkedList, Node } from "../helpers/linked-listClasses";
 import { createMatrix } from "../helpers/matrixCreation";
@@ -90,22 +90,21 @@ const Canvas: FC = () => {
     // ignore if user presses any keys other than arrow keys
     if (!isValidDirection) return;
 
-    const moveOpposite =
-      getOppositeDirection(newDirection) === direction && snakeCells.size > 1;
-    // this code has bugs where the "direction" and "snakeCells" are not updating to the latest values
+    const isOppositeDirection =
+      getOppositeDirection(direction) === newDirection && snakeCells.size > 1;
 
-    if (moveOpposite) return;
-
-    setDirection(newDirection);
+    if (!isOppositeDirection) {
+      setDirection(newDirection);
+    } else {
+      setDirection(direction);
+    }
   };
 
-  useEffect(() => {
+  useInterval((e: KeyboardEvent) => {
+    // somehow cannot use useEffect to set the event listener. The direction and snakeCells would never been updated if that's in a useEffect hook
     window.addEventListener("keydown", (e: KeyboardEvent) => {
       handleKeydown(e);
     });
-  }, []);
-
-  useInterval(() => {
     moveSnake();
   }, 150);
 
