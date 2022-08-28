@@ -1,4 +1,3 @@
-import { getOppositeDirection } from "./direction";
 import { LinkedList } from "./linked-listClasses";
 import { randomNumGenerator } from "./math";
 
@@ -90,7 +89,7 @@ export const snakeHitsWall = (coords: ICoords, canvas: number[][]) => {
   if (row < 0 || col < 0) return true;
 
   // down and right wall
-  if (row > canvas.length || col > canvas[0].length) return true;
+  if (row > canvas.length - 1 || col > canvas[0].length - 1) return true;
 
   return false;
 };
@@ -98,11 +97,18 @@ export const snakeHitsWall = (coords: ICoords, canvas: number[][]) => {
 // reverse snake (linked list) and direction
 export const reverseSnake = (
   snake: LinkedList,
-  direction: string,
   setDirection: React.Dispatch<React.SetStateAction<string>>
 ) => {
-  const newDirection = getOppositeDirection(direction);
-
   snake.reverse();
-  setDirection(newDirection);
+
+  // after reverse, need to determine the head direction
+  if (snake.head.value.col === snake.head.next!.value.col) {
+    snake.head.value.row > snake.head.next!.value.row
+      ? setDirection("DOWN")
+      : setDirection("UP");
+  } else if (snake.head.value.row === snake.head.next!.value.row) {
+    snake.head.value.col > snake.head.next!.value.col
+      ? setDirection("RIGHT")
+      : setDirection("LEFT");
+  }
 };

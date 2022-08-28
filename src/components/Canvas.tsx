@@ -123,58 +123,66 @@ const Canvas: FC = () => {
     // get the coords (row, col) of the next cell based on key input
     const nextHeadCoords = getNewNodeCoords(currentHeadCoords, direction);
 
-    // if snake hits the wall, game over
     if (snakeHitsWall(nextHeadCoords, canvas)) {
+      // if snake go out of bound, game over
       console.log("Snake hits the wall!");
       handleGameOver();
       return;
     }
 
-    // get the value of the cell
-    const nextHeadCell = canvas[nextHeadCoords.row][nextHeadCoords.col];
+    let nextHeadCell: number | null = null;
 
-    // if snake head encounters a cell which contains its body, game over
-    if (nextHeadCell && snakeCells.has(nextHeadCell)) {
-      console.log("Snake ate its body!");
-      handleGameOver();
-      return;
+    if (
+      nextHeadCoords.row < canvas.length &&
+      nextHeadCoords.col < canvas[0].length
+    ) {
+      nextHeadCell = canvas[nextHeadCoords.row][nextHeadCoords.col];
     }
 
-    // create a new head for the linked list
-    const newHead = new Node({
-      row: nextHeadCoords.row,
-      col: nextHeadCoords.col,
-      cell: nextHeadCell,
-    });
+    if (nextHeadCell) {
+      // if snake head encounters a cell which contains its body, game over
+      if (snakeCells.has(nextHeadCell)) {
+        console.log("Snake ate its body!");
+        handleGameOver();
+        return;
+      }
 
-    // add new head to the linked list
-    snake.unshift(newHead);
+      // create a new head for the linked list
+      const newHead = new Node({
+        row: nextHeadCoords.row,
+        col: nextHeadCoords.col,
+        cell: nextHeadCell,
+      });
 
-    // update snakeCells set as the snake moves (add new head to Set and delete tail from Set)
-    const newSnakeCells = new Set(snakeCells);
-    newSnakeCells.add(nextHeadCell);
+      // add new head to the linked list
+      snake.unshift(newHead);
 
-    // handle apple consumption on the move
-    const appleIsConsumed = nextHeadCell === appleCell;
+      // update snakeCells set as the snake moves (add new head to Set and delete tail from Set)
+      const newSnakeCells = new Set(snakeCells);
+      newSnakeCells.add(nextHeadCell);
 
-    if (appleIsConsumed) {
-      if (reverseApple) reverseSnake(snake, direction, setDirection);
-      setNewAppleLocation(
-        CANVAS_SIZE,
-        newSnakeCells,
-        appleCell,
-        setAppleCell,
-        setReverseApple,
-        setScore
-      );
-    } else {
-      // it means the snake is just moving without growing its body, we need to pop of its tail when it moves because new head will keep adding
-      // delete before popping of the tail
-      newSnakeCells.delete(snake.tail.value.cell);
-      snake.pop();
+      // handle apple consumption on the move
+      const appleIsConsumed = nextHeadCell === appleCell;
+
+      if (appleIsConsumed) {
+        if (reverseApple) reverseSnake(snake, setDirection);
+        setNewAppleLocation(
+          CANVAS_SIZE,
+          newSnakeCells,
+          appleCell,
+          setAppleCell,
+          setReverseApple,
+          setScore
+        );
+      } else {
+        // it means the snake is just moving without growing its body, we need to pop of its tail when it moves because new head will keep adding
+        // delete before popping of the tail
+        newSnakeCells.delete(snake.tail.value.cell);
+        snake.pop();
+      }
+
+      setSnakeCells(newSnakeCells);
     }
-
-    setSnakeCells(newSnakeCells);
   };
 
   const handleGameOver = () => {
