@@ -1,8 +1,14 @@
+interface ICell {
+  row: number;
+  col: number;
+  cell: number;
+}
+
 export class Node {
-  value: Cell;
+  value: ICell;
   next: any;
 
-  constructor(value: Cell) {
+  constructor(value: ICell) {
     this.value = value;
     this.next = null;
   }
@@ -12,21 +18,35 @@ export class LinkedList {
   head: Node;
   tail: Node;
 
-  constructor(value: any) {
+  constructor(value: ICell) {
     const node = new Node(value);
     this.head = node;
     this.tail = node;
   }
-}
 
-export class Cell {
-  row: number;
-  col: number;
-  cell: any;
+  unshift(newHead: Node) {
+    if (!this.head) {
+      this.head = newHead;
+    } else {
+      newHead.next = this.head;
+      this.head = newHead;
+    }
+    return this;
+  }
 
-  constructor(row: number, col: number, value: number) {
-    this.row = row;
-    this.col = col;
-    this.cell = value;
+  pop() {
+    let current = this.head;
+    let prev = current;
+
+    while (current.next) {
+      prev = current;
+      current = current.next;
+    }
+
+    this.tail = prev;
+    this.tail.next = null;
+    if (this.tail === null) this.tail = this.head;
+
+    return current;
   }
 }

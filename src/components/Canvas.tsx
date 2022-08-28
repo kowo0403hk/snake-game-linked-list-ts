@@ -1,13 +1,22 @@
 import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
-import { Node, LinkedList } from "../helpers/linked-listClasses";
+import { LinkedList, Node } from "../helpers/linked-listClasses";
 import { createMatrix } from "../helpers/matrixCreation";
-import { getDirectionFromKey, DIRECTION } from "../helpers/direction";
-import { initiateSnakeBody, moveSnake } from "../helpers/movements";
-import { handleAppleConsumption } from "../helpers/appleConsumption";
+import {
+  getDirectionFromKey,
+  DIRECTION,
+  getOppositeDirection,
+} from "../helpers/direction";
+import {
+  initiateSnakeBody,
+  setNewAppleLocation,
+  getNextCoords,
+  snakeHitsWall,
+} from "../helpers/gameLogic";
+
 import { useInterval } from "../hooks/useInterval";
 
-const Board = styled.div``;
+const Container = styled.div``;
 
 const Score = styled.h1``;
 
@@ -26,11 +35,14 @@ const Cell = styled.div`
   outline: 1px solid rgb(134, 154, 189);
   display: inline-block;
 
-  &.snake-cell {
+  &.cell-green {
     background-color: green;
   }
-  &.apple-cell {
+  &.cell-red {
     background-color: red;
+  }
+  &.cell-purple {
+    background-color: purple;
   }
 `;
 
@@ -50,7 +62,7 @@ const Canvas: FC = () => {
   const [snakeCells, setSnakeCells] = useState(
     new Set([snake.head.value.cell])
   );
-  const [appleCell, setAppleCells] = useState(
+  const [appleCell, setAppleCell] = useState(
     snake.head.value.cell + Math.floor(Math.random() * 10)
   );
 
@@ -68,6 +80,7 @@ const Canvas: FC = () => {
 
     const moveOpposite =
       getOppositeDirection(newDirection) === direction && snakeCells.size > 1;
+    // this code has bugs where the "direction" and "snakeCells" are not updating to the latest values
 
     if (moveOpposite) return;
 
@@ -81,17 +94,106 @@ const Canvas: FC = () => {
   }, []);
 
   useInterval(() => {
-    moveSnake(snake, direction);
+    moveSnake();
   }, 150);
+
+  const moveSnake = () => {
+    const currentHeadCoords = {
+      row: snake.head.value.row,
+      col: snake.head.value.col,
+    };
+
+    // get the coords (row, col) of the next cell based on key input
+    const nextHeadCoords = getNextCoords(currentHeadCoords, direction);
+
+    // get the value of the cell
+    const nextHeadCell = canvas[nextHeadCoords.row][nextHeadCoords.col];
+
+    // if snake hits the wall, game over
+    if (snakeHitsWall(nextHeadCoords, canvas)) {
+      handleGameOver();
+      return;
+    }
+
+    // if snake head encounters a cell which contains its body, game over
+    if (snakeCells.has(nextHeadCell)) {
+      handleGameOver();
+      return;
+    }
+
+    // create a new head for the linked list
+    const newHead = new Node({
+      row: nextHeadCoords.row,
+      col: nextHeadCoords.col,
+      cell: nextHeadCell,
+    });
+
+    // swap and add new head to the linked list
+    snake.unshift(newHead);
+
+    // update snakeCells set as the snake moves (add new head to Set and delete tail from Set)
+    const newSnakeCells = new Set(snakeCells);
+    newSnakeCells.add(nextHeadCell);
+    newSnakeCells.delete(snake.tail.value.cell); // delete before popping of the tail
+
+    snake.pop();
+
+    // handle apple consumption
+    const appleIsConsumed = nextHeadCell === appleCell;
+    if (appleIsConsumed) {
+      // This function mutates newSnakeCells.
+      growSnake(newSnakeCells);
+      if (reverseApple) reverseSnake();
+      setNewAppleLocation(CANVAS_SIZE, newSnakeCells, appleCell, setAppleCell);
+    }
+
+    setSnakeCells(newSnakeCells);
+  };
+
+  const growSnake = (newSnakeCells: Set<number>) => {};
+
+  const getGrowthNodeCoords = (snakeTail: Node, currentDirection: string) => {};
+
+  const getNextNodeDirection = (node: Node, currentDirection: string) => {
+    if (node.next === null) return currentDirection;
+
+    const { row: currentRow, col: currentCol } = node.value;
+
+    const { row: nextRow, col: nextCol } = node.next.value;
+
+    if (nextRow === currentRow && nextCol === currentCol + 1) {
+      return DIRECTION.RIGHT;
+    }
+  };
 
   const handleGameOver = () => {
     setScore(0);
     const newSnakeLLValue = initiateSnakeBody(canvas);
     setSnake(new LinkedList(newSnakeLLValue));
-    setAppleCells(
-      newSnakeLLValue.head.value.cell + Math.floor(Math.random() * 10)
-    );
+    setAppleCell(newSnakeLLValue.cell + Math.floor(Math.random() * 10));
     setDirection(DIRECTION.RIGHT);
+  };
+
+  const getClassName = (
+    cellValue: number,
+    appleCell: number,
+    reverseApple: boolean,
+    snakeCells: Set<number>
+  ) => {
+    let className = "";
+
+    if (cellValue === appleCell) {
+      if (reverseApple) {
+        className = "cell-purple";
+      } else {
+        className = "cell-red";
+      }
+    }
+
+    if (snakeCells.has(cellValue)) {
+      className = "cell-green";
+    }
+    return className;
   };
 
   // create the rows and cells for the canvas
@@ -99,11 +201,14 @@ const Canvas: FC = () => {
     return (
       <Row key={rowIndex}>
         {row.map((cellValue, cellIndex) => {
+          const className = getClassName(
+            cellValue,
+            appleCell,
+            reverseApple,
+            snakeCells
+          );
           return (
-            <Cell
-              key={cellIndex}
-              className={`${snakeCells.has(cellValue) ? "snake-cell" : ""}`}
-            >
+            <Cell key={cellIndex} className={className}>
               {cellValue}
             </Cell>
           );
@@ -113,10 +218,10 @@ const Canvas: FC = () => {
   });
 
   return (
-    <Board>
+    <Container>
       <Score>Score: {score}</Score>
       <CanvasContainer>{mappedCanvas}</CanvasContainer>;
-    </Board>
+    </Container>
   );
 };
 
