@@ -1,3 +1,5 @@
+import { getOppositeDirection } from "./direction";
+import { LinkedList } from "./linked-listClasses";
 import { randomNumGenerator } from "./math";
 
 // initial starting point of the snake
@@ -49,12 +51,16 @@ export const getNewNodeCoords = (coords: ICoords, direction: string) => {
   };
 };
 
+const REVERSE_PROBABILITY = 0.3;
+
 // consumption of apple
 export const setNewAppleLocation = (
   CANVAS_SIZE: number,
   snakeCells: Set<number>,
   appleCell: number,
-  setAppleCell: React.Dispatch<any>
+  setAppleCell: React.Dispatch<React.SetStateAction<number>>,
+  setReverseApple: React.Dispatch<React.SetStateAction<boolean>>,
+  setScore: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const maxPossibleCellValue = CANVAS_SIZE * CANVAS_SIZE;
 
@@ -67,7 +73,11 @@ export const setNewAppleLocation = (
     break;
   }
 
+  const appleIsReversed = Math.random() < REVERSE_PROBABILITY;
+
   setAppleCell(nextAppleCell);
+  setReverseApple(appleIsReversed); // handle the reverse logic
+  setScore((prev) => prev++);
 };
 
 // snake hits wall
@@ -81,4 +91,16 @@ export const snakeHitsWall = (coords: ICoords, canvas: number[][]) => {
   if (row > canvas.length || col > canvas[0].length) return true;
 
   return false;
+};
+
+// reverse snake (linked list) and direction
+export const reverseSnake = (
+  snake: LinkedList,
+  direction: string,
+  setDirection: React.Dispatch<React.SetStateAction<string>>
+) => {
+  const newDirection = getOppositeDirection(direction);
+
+  snake.reverse();
+  setDirection(newDirection);
 };

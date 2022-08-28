@@ -12,6 +12,7 @@ import {
   setNewAppleLocation,
   getNewNodeCoords,
   snakeHitsWall,
+  reverseSnake,
 } from "../helpers/gameLogic";
 
 import { useInterval } from "../hooks/useInterval";
@@ -46,14 +47,25 @@ const Cell = styled.div`
   }
 `;
 
-const CANVAS_SIZE = 10;
-const REVERSE_PROBABILITY = 0.3;
+interface IDifficulty {
+  LEVEL: string;
+  CANVAS_SIZE: number;
+  REVERSE_PROP: number;
+}
 
 const Canvas: FC = () => {
   const [score, setScore] = useState(0);
 
+  const [difficulty, setDifficulty] = useState<IDifficulty>({
+    LEVEL: "Normal",
+    CANVAS_SIZE: 10,
+    REVERSE_PROP: 0.4,
+  });
+
+  const { LEVEL, CANVAS_SIZE, REVERSE_PROP } = difficulty;
+
   // creating a a 10x10 2D array
-  const [canvas, setCanvas] = useState(createMatrix(CANVAS_SIZE));
+  const canvas = createMatrix(CANVAS_SIZE);
 
   // contains the snake body
   const [snake, setSnake] = useState(new LinkedList(initiateSnakeBody(canvas)));
@@ -139,8 +151,15 @@ const Canvas: FC = () => {
     const appleIsConsumed = nextHeadCell === appleCell;
 
     if (appleIsConsumed) {
-      // if (reverseApple) reverseSnake();
-      setNewAppleLocation(CANVAS_SIZE, newSnakeCells, appleCell, setAppleCell);
+      if (reverseApple) reverseSnake(snake, direction, setDirection);
+      setNewAppleLocation(
+        CANVAS_SIZE,
+        newSnakeCells,
+        appleCell,
+        setAppleCell,
+        setReverseApple,
+        setScore
+      );
     } else {
       // it means the snake is just moving without growing its body, we need to pop of its tail when it moves because new head will keep adding
       // delete before popping of the tail
@@ -150,78 +169,6 @@ const Canvas: FC = () => {
 
     setSnakeCells(newSnakeCells);
   };
-
-  // const growSnake = (
-  //   newSnakeCells: Set<number>,
-  //   snake: LinkedList,
-  //   currentDirection: string
-  // ) => {
-  //   // the snake head is already the coodrinate where
-
-  //   // need to change it to head
-  //   const growthNodeCoords = getGrowthNodeCoords(snake.head, currentDirection);
-
-  //   if (snakeHitsWall(growthNodeCoords, canvas)) return;
-
-  //   // need to change it back to head
-  //   const newTailCell = canvas[growthNodeCoords.row][growthNodeCoords.col];
-
-  //   const newTail = new Node({
-  //     row: growthNodeCoords.row,
-  //     col: growthNodeCoords.col,
-  //     cell: newTailCell,
-  //   });
-
-  //   // use the unshift function
-  //   const currentTail = snake.tail;
-  //   snake.tail = newTail;
-  //   snake.tail.next = currentTail;
-
-  //   newSnakeCells.add(newTailCell);
-  // };
-
-  // const getGrowthNodeCoords = (snakeTail: Node, currentDirection: string) => {
-  //   const tailNextNodeDirection = getNextNodeDirection(
-  //     snakeTail,
-  //     currentDirection
-  //   );
-
-  //   const growthDirection = getOppositeDirection(tailNextNodeDirection);
-
-  //   const currentTailCoords = {
-  //     row: snakeTail.value.row,
-  //     col: snakeTail.value.col,
-  //   };
-
-  //   const growthNodeCoords = getNewNodeCoords(
-  //     currentTailCoords,
-  //     growthDirection
-  //   );
-
-  //   return growthNodeCoords;
-  // };
-
-  // const getNextNodeDirection = (node: Node, currentDirection: string) => {
-  //   if (node.next === null) return currentDirection;
-
-  //   const { row: currentRow, col: currentCol } = node.value;
-
-  //   const { row: nextRow, col: nextCol } = node.next.value;
-
-  //   if (nextRow === currentRow && nextCol === currentCol + 1) {
-  //     return DIRECTION.RIGHT;
-  //   }
-  //   if (nextRow === currentRow && nextCol === currentCol - 1) {
-  //     return DIRECTION.LEFT;
-  //   }
-  //   if (nextCol === currentCol && nextRow === currentRow + 1) {
-  //     return DIRECTION.DOWN;
-  //   }
-  //   if (nextCol === currentCol && nextRow === currentRow - 1) {
-  //     return DIRECTION.UP;
-  //   }
-  //   return "";
-  // };
 
   const handleGameOver = () => {
     setScore(0);
@@ -277,7 +224,7 @@ const Canvas: FC = () => {
   return (
     <Container>
       <Score>Score: {score}</Score>
-      <CanvasContainer>{mappedCanvas}</CanvasContainer>;
+      <CanvasContainer>{mappedCanvas}</CanvasContainer>
     </Container>
   );
 };

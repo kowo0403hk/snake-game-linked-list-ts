@@ -1,10 +1,10 @@
 1. [X] Create a canvas
   - [X] Matrix
 
-2. [] Create snake
+2. [X] Create snake
   - [X] Singly Linked-List
-  - [] Handle snake growth
-  - [] Handle snake direction reversal (reverse linked list)
+  - [X] Handle snake growth
+  - [X] Handle snake direction reversal (reverse linked list)
 
 3. [X] Styles
   - [X] Snake cells
@@ -12,8 +12,8 @@
 
 4. [X] Direction input (up, down, left, right) events
 
-5. [] Movement events
-  - [] handle opposite direction movement
+5. [X] Movement events
+  - [X] handle opposite direction movement
 
 6. [X] Apple consumption
 
