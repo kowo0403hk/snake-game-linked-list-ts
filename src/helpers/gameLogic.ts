@@ -23,7 +23,7 @@ interface ICoords {
   col: number;
 }
 
-export const getNextCoords = (coords: ICoords, direction: string) => {
+export const getNewNodeCoords = (coords: ICoords, direction: string) => {
   if (direction === "UP") {
     return {
       row: coords.row - 1,
@@ -74,8 +74,10 @@ export const setNewAppleLocation = (
 export const snakeHitsWall = (coords: ICoords, canvas: number[][]) => {
   const { row, col } = coords;
 
+  // up and left wall
   if (row < 0 || col < 0) return true;
 
+  // down and right wall
   if (row > canvas.length || col > canvas[0].length) return true;
 
   return false;

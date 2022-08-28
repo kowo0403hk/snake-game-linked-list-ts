@@ -10,7 +10,7 @@ import {
 import {
   initiateSnakeBody,
   setNewAppleLocation,
-  getNextCoords,
+  getNewNodeCoords,
   snakeHitsWall,
 } from "../helpers/gameLogic";
 
@@ -46,7 +46,7 @@ const Cell = styled.div`
   }
 `;
 
-const CANVAS_SIZE = 15;
+const CANVAS_SIZE = 10;
 const REVERSE_PROBABILITY = 0.3;
 
 const Canvas: FC = () => {
@@ -104,7 +104,7 @@ const Canvas: FC = () => {
     };
 
     // get the coords (row, col) of the next cell based on key input
-    const nextHeadCoords = getNextCoords(currentHeadCoords, direction);
+    const nextHeadCoords = getNewNodeCoords(currentHeadCoords, direction);
 
     // get the value of the cell
     const nextHeadCell = canvas[nextHeadCoords.row][nextHeadCoords.col];
@@ -128,43 +128,100 @@ const Canvas: FC = () => {
       cell: nextHeadCell,
     });
 
-    // swap and add new head to the linked list
+    // add new head to the linked list
     snake.unshift(newHead);
 
     // update snakeCells set as the snake moves (add new head to Set and delete tail from Set)
     const newSnakeCells = new Set(snakeCells);
     newSnakeCells.add(nextHeadCell);
-    newSnakeCells.delete(snake.tail.value.cell); // delete before popping of the tail
 
-    snake.pop();
-
-    // handle apple consumption
+    // handle apple consumption on the move
     const appleIsConsumed = nextHeadCell === appleCell;
+
     if (appleIsConsumed) {
-      // This function mutates newSnakeCells.
-      growSnake(newSnakeCells);
-      if (reverseApple) reverseSnake();
+      // if (reverseApple) reverseSnake();
       setNewAppleLocation(CANVAS_SIZE, newSnakeCells, appleCell, setAppleCell);
+    } else {
+      // it means the snake is just moving without growing its body, we need to pop of its tail when it moves because new head will keep adding
+      // delete before popping of the tail
+      newSnakeCells.delete(snake.tail.value.cell);
+      snake.pop();
     }
 
     setSnakeCells(newSnakeCells);
   };
 
-  const growSnake = (newSnakeCells: Set<number>) => {};
+  // const growSnake = (
+  //   newSnakeCells: Set<number>,
+  //   snake: LinkedList,
+  //   currentDirection: string
+  // ) => {
+  //   // the snake head is already the coodrinate where
 
-  const getGrowthNodeCoords = (snakeTail: Node, currentDirection: string) => {};
+  //   // need to change it to head
+  //   const growthNodeCoords = getGrowthNodeCoords(snake.head, currentDirection);
 
-  const getNextNodeDirection = (node: Node, currentDirection: string) => {
-    if (node.next === null) return currentDirection;
+  //   if (snakeHitsWall(growthNodeCoords, canvas)) return;
 
-    const { row: currentRow, col: currentCol } = node.value;
+  //   // need to change it back to head
+  //   const newTailCell = canvas[growthNodeCoords.row][growthNodeCoords.col];
 
-    const { row: nextRow, col: nextCol } = node.next.value;
+  //   const newTail = new Node({
+  //     row: growthNodeCoords.row,
+  //     col: growthNodeCoords.col,
+  //     cell: newTailCell,
+  //   });
 
-    if (nextRow === currentRow && nextCol === currentCol + 1) {
-      return DIRECTION.RIGHT;
-    }
-  };
+  //   // use the unshift function
+  //   const currentTail = snake.tail;
+  //   snake.tail = newTail;
+  //   snake.tail.next = currentTail;
+
+  //   newSnakeCells.add(newTailCell);
+  // };
+
+  // const getGrowthNodeCoords = (snakeTail: Node, currentDirection: string) => {
+  //   const tailNextNodeDirection = getNextNodeDirection(
+  //     snakeTail,
+  //     currentDirection
+  //   );
+
+  //   const growthDirection = getOppositeDirection(tailNextNodeDirection);
+
+  //   const currentTailCoords = {
+  //     row: snakeTail.value.row,
+  //     col: snakeTail.value.col,
+  //   };
+
+  //   const growthNodeCoords = getNewNodeCoords(
+  //     currentTailCoords,
+  //     growthDirection
+  //   );
+
+  //   return growthNodeCoords;
+  // };
+
+  // const getNextNodeDirection = (node: Node, currentDirection: string) => {
+  //   if (node.next === null) return currentDirection;
+
+  //   const { row: currentRow, col: currentCol } = node.value;
+
+  //   const { row: nextRow, col: nextCol } = node.next.value;
+
+  //   if (nextRow === currentRow && nextCol === currentCol + 1) {
+  //     return DIRECTION.RIGHT;
+  //   }
+  //   if (nextRow === currentRow && nextCol === currentCol - 1) {
+  //     return DIRECTION.LEFT;
+  //   }
+  //   if (nextCol === currentCol && nextRow === currentRow + 1) {
+  //     return DIRECTION.DOWN;
+  //   }
+  //   if (nextCol === currentCol && nextRow === currentRow - 1) {
+  //     return DIRECTION.UP;
+  //   }
+  //   return "";
+  // };
 
   const handleGameOver = () => {
     setScore(0);
