@@ -77,12 +77,14 @@ export const setNewAppleLocation = (
 
   setAppleCell(nextAppleCell);
   setReverseApple(appleIsReversed); // handle the reverse logic
-  setScore((prev) => prev++);
+  setScore((prev) => (prev += 1));
 };
 
 // snake hits wall
 export const snakeHitsWall = (coords: ICoords, canvas: number[][]) => {
   const { row, col } = coords;
+
+  // currently, it seems like it would not go pass the row < 0 or row > canvas.length
 
   // up and left wall
   if (row < 0 || col < 0) return true;

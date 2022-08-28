@@ -100,7 +100,7 @@ const Canvas: FC = () => {
     }
   };
 
-  useInterval((e: KeyboardEvent) => {
+  useInterval(() => {
     // somehow cannot use useEffect to set the event listener. The direction and snakeCells would never been updated if that's in a useEffect hook
     window.addEventListener("keydown", (e: KeyboardEvent) => {
       handleKeydown(e);
@@ -117,14 +117,14 @@ const Canvas: FC = () => {
     // get the coords (row, col) of the next cell based on key input
     const nextHeadCoords = getNewNodeCoords(currentHeadCoords, direction);
 
-    // get the value of the cell
-    const nextHeadCell = canvas[nextHeadCoords.row][nextHeadCoords.col];
-
     // if snake hits the wall, game over
     if (snakeHitsWall(nextHeadCoords, canvas)) {
       handleGameOver();
       return;
     }
+
+    // get the value of the cell
+    const nextHeadCell = canvas[nextHeadCoords.row][nextHeadCoords.col];
 
     // if snake head encounters a cell which contains its body, game over
     if (snakeCells.has(nextHeadCell)) {
@@ -169,13 +169,7 @@ const Canvas: FC = () => {
     setSnakeCells(newSnakeCells);
   };
 
-  const handleGameOver = () => {
-    setScore(0);
-    const newSnakeLLValue = initiateSnakeBody(canvas);
-    setSnake(new LinkedList(newSnakeLLValue));
-    setAppleCell(newSnakeLLValue.cell + Math.floor(Math.random() * 10));
-    setDirection(DIRECTION.RIGHT);
-  };
+  const handleGameOver = () => {};
 
   const getClassName = (
     cellValue: number,
