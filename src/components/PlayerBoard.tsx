@@ -34,7 +34,8 @@ interface IDifficulty {
 }
 
 interface IPlayerBoard {
-  difficulty: IDifficulty;
+  score: number;
+  highScore: number;
   setDifficulty: React.Dispatch<React.SetStateAction<IDifficulty>>;
   setGameStart: React.Dispatch<React.SetStateAction<boolean>>;
   setGameOver: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,7 +43,7 @@ interface IPlayerBoard {
 }
 
 const PlayerBoard: FC<IPlayerBoard> = ({
-  difficulty,
+  highScore,
   setDifficulty,
   setGameStart,
   setGameOver,
@@ -84,8 +85,11 @@ const PlayerBoard: FC<IPlayerBoard> = ({
 
   return (
     <Container>
-      <Player>Player1</Player>
-      <HighScore>Leader Board</HighScore>
+      <Player>Greatest Snake!</Player>
+      <HighScore>
+        <Narrative>Highest Score</Narrative>
+        {highScore}
+      </HighScore>
       <Play>
         <Narrative>Please select difficulty:</Narrative>
         <Select name="difficulty" onChange={handleDifficulty}>

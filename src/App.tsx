@@ -58,7 +58,8 @@ const App: FC = () => {
         setGameOver={setGameOver}
       />
       <PlayerBoard
-        difficulty={difficulty}
+        score={score}
+        highScore={highScore}
         setDifficulty={setDifficulty}
         setGameStart={setGameStart}
         setGameOver={setGameOver}

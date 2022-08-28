@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useRef } from "react";
+import { FC, useState } from "react";
 import styled from "styled-components";
 import { LinkedList, Node } from "../helpers/linked-listClasses";
 import { createMatrix } from "../helpers/matrixCreation";
