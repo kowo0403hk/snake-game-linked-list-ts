@@ -67,6 +67,9 @@ const Canvas: FC = () => {
   // creating a a 10x10 2D array
   const canvas = createMatrix(CANVAS_SIZE);
 
+  // game start or end mechanism
+  const [gameStart, setGameStart] = useState(true);
+
   // contains the snake body
   const [snake, setSnake] = useState(new LinkedList(initiateSnakeBody(canvas)));
 
@@ -100,13 +103,16 @@ const Canvas: FC = () => {
     }
   };
 
-  useInterval(() => {
-    // somehow cannot use useEffect to set the event listener. The direction and snakeCells would never been updated if that's in a useEffect hook
-    window.addEventListener("keydown", (e: KeyboardEvent) => {
-      handleKeydown(e);
-    });
-    moveSnake();
-  }, 150);
+  useInterval(
+    () => {
+      // somehow cannot use useEffect to set the event listener. The direction and snakeCells would never been updated if that's in a useEffect hook
+      window.addEventListener("keydown", (e: KeyboardEvent) => {
+        handleKeydown(e);
+      });
+      moveSnake();
+    },
+    gameStart ? 150 : null
+  );
 
   const moveSnake = () => {
     const currentHeadCoords = {
@@ -119,6 +125,7 @@ const Canvas: FC = () => {
 
     // if snake hits the wall, game over
     if (snakeHitsWall(nextHeadCoords, canvas)) {
+      console.log("Snake hits the wall!");
       handleGameOver();
       return;
     }
@@ -127,7 +134,8 @@ const Canvas: FC = () => {
     const nextHeadCell = canvas[nextHeadCoords.row][nextHeadCoords.col];
 
     // if snake head encounters a cell which contains its body, game over
-    if (snakeCells.has(nextHeadCell)) {
+    if (nextHeadCell && snakeCells.has(nextHeadCell)) {
+      console.log("Snake ate its body!");
       handleGameOver();
       return;
     }
@@ -169,7 +177,9 @@ const Canvas: FC = () => {
     setSnakeCells(newSnakeCells);
   };
 
-  const handleGameOver = () => {};
+  const handleGameOver = () => {
+    setGameStart(false);
+  };
 
   const getClassName = (
     cellValue: number,
