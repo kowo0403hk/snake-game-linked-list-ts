@@ -17,22 +17,32 @@ import {
 
 import { useInterval } from "../hooks/useInterval";
 
-const Container = styled.div``;
+const Container = styled.div`
+  height: 100vh;
+  width: 70vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px dotted red;
+`;
 
 const Score = styled.h1``;
+
+const CountDown = styled.div``;
 
 const CanvasContainer = styled.div`
   outline: 2px solid rgb(134, 154, 189);
 `;
 
 const Row = styled.div`
-  height: 50px;
+  height: 35px;
 `;
 
 // the props.backgroundColor determines the cell has snake body(green), food(red), or nothing (null)
 const Cell = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   outline: 1px solid rgb(134, 154, 189);
   display: inline-block;
 
@@ -47,28 +57,29 @@ const Cell = styled.div`
   }
 `;
 
-interface IDifficulty {
-  LEVEL: string;
+interface ICanvas {
+  score: number;
+  setScore: React.Dispatch<React.SetStateAction<number>>;
   CANVAS_SIZE: number;
-  REVERSE_PROP: number;
+  REVERSE_PROB: number;
+  gameStart: boolean;
+  setGameStart: React.Dispatch<React.SetStateAction<boolean>>;
+  gameOver: boolean;
+  setGameOver: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Canvas: FC = () => {
-  const [score, setScore] = useState(0);
-
-  const [difficulty, setDifficulty] = useState<IDifficulty>({
-    LEVEL: "Normal",
-    CANVAS_SIZE: 10,
-    REVERSE_PROP: 0.4,
-  });
-
-  const { LEVEL, CANVAS_SIZE, REVERSE_PROP } = difficulty;
-
-  // creating a a 10x10 2D array
+const Canvas: FC<ICanvas> = ({
+  score,
+  setScore,
+  CANVAS_SIZE,
+  REVERSE_PROB,
+  gameStart,
+  setGameStart,
+  gameOver,
+  setGameOver,
+}: ICanvas) => {
+  // creating a 2D array as the canvas
   const canvas = createMatrix(CANVAS_SIZE);
-
-  // game start or end mechanism
-  const [gameStart, setGameStart] = useState(true);
 
   // contains the snake body
   const [snake, setSnake] = useState(new LinkedList(initiateSnakeBody(canvas)));
@@ -172,7 +183,8 @@ const Canvas: FC = () => {
           appleCell,
           setAppleCell,
           setReverseApple,
-          setScore
+          setScore,
+          REVERSE_PROB
         );
       } else {
         // it means the snake is just moving without growing its body, we need to pop of its tail when it moves because new head will keep adding
@@ -187,6 +199,12 @@ const Canvas: FC = () => {
 
   const handleGameOver = () => {
     setGameStart(false);
+    setGameOver(true);
+    const newSnakeBody = initiateSnakeBody(canvas);
+    setSnake(new LinkedList(newSnakeBody));
+    setSnakeCells(new Set([newSnakeBody.cell]));
+    setAppleCell(newSnakeBody.cell + Math.floor(Math.random() * 10));
+    setDirection(DIRECTION.RIGHT);
   };
 
   const getClassName = (
@@ -222,11 +240,7 @@ const Canvas: FC = () => {
             reverseApple,
             snakeCells
           );
-          return (
-            <Cell key={cellIndex} className={className}>
-              {cellValue}
-            </Cell>
-          );
+          return <Cell key={cellIndex} className={className} />;
         })}
       </Row>
     );
@@ -235,7 +249,10 @@ const Canvas: FC = () => {
   return (
     <Container>
       <Score>Score: {score}</Score>
-      <CanvasContainer>{mappedCanvas}</CanvasContainer>
+      <CountDown>
+        <CanvasContainer>{mappedCanvas}</CanvasContainer>
+        {gameOver && <p>Sorry, your snake has died. Your score is {score}.</p>}
+      </CountDown>
     </Container>
   );
 };

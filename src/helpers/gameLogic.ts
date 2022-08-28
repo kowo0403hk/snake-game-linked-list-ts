@@ -50,8 +50,6 @@ export const getNewNodeCoords = (coords: ICoords, direction: string) => {
   };
 };
 
-const REVERSE_PROBABILITY = 0.3;
-
 // consumption of apple
 export const setNewAppleLocation = (
   CANVAS_SIZE: number,
@@ -59,9 +57,10 @@ export const setNewAppleLocation = (
   appleCell: number,
   setAppleCell: React.Dispatch<React.SetStateAction<number>>,
   setReverseApple: React.Dispatch<React.SetStateAction<boolean>>,
-  setScore: React.Dispatch<React.SetStateAction<number>>
+  setScore: React.Dispatch<React.SetStateAction<number>>,
+  reverseProbability: number
 ) => {
-  const maxPossibleCellValue = CANVAS_SIZE * CANVAS_SIZE;
+  const maxPossibleCellValue = CANVAS_SIZE * (CANVAS_SIZE + 2);
 
   let nextAppleCell: number;
 
@@ -72,7 +71,7 @@ export const setNewAppleLocation = (
     break;
   }
 
-  const appleIsReversed = Math.random() < REVERSE_PROBABILITY;
+  const appleIsReversed = Math.random() < reverseProbability;
 
   setAppleCell(nextAppleCell);
   setReverseApple(appleIsReversed); // handle the reverse logic

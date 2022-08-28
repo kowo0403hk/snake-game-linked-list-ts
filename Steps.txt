@@ -17,8 +17,8 @@
 
 6. [X] Apple consumption
 
-7. [] Death event
+7. [X] Death event
 
-8. [] Score event
+8. [X] Score event
 
 9. [] Game start and game reset events
