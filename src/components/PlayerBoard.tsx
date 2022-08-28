@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -8,12 +8,10 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  border: 1px solid green;
+  border: 2px solid white;
 `;
 
-const Player = styled.h1`
-  border: 1px solid yellow;
-`;
+const Player = styled.h1``;
 
 const HighScore = styled.div``;
 
@@ -85,16 +83,20 @@ const PlayerBoard: FC<IPlayerBoard> = ({
 
   return (
     <Container>
-      <Player>Greatest Snake!</Player>
+      <Player>Linked List Snake!</Player>
       <HighScore>
         <Narrative>Highest Score</Narrative>
         {highScore}
       </HighScore>
       <Play>
         <Narrative>Please select difficulty:</Narrative>
-        <Select name="difficulty" onChange={handleDifficulty}>
+        <Select
+          name="difficulty"
+          defaultValue="NORMAL"
+          onChange={handleDifficulty}
+        >
           <Option>EASY</Option>
-          <Option selected={true}>NORMAL</Option>
+          <Option>NORMAL</Option>
           <Option>HARD</Option>
         </Select>
         <Button onClick={handlePlay}>Play</Button>

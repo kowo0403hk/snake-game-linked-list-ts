@@ -5,8 +5,12 @@ import Canvas from "./components/Canvas";
 import PlayerBoard from "./components/PlayerBoard";
 
 const Container = styled.div`
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 24, 24, 0.6),
+    rgba(24, 24, 24, 1)
+  );
   text-align: center;
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   align-items: center;

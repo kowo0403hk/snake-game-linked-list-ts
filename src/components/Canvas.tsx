@@ -24,15 +24,13 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  border: 1px dotted red;
+  border: 2px solid white;
 `;
 
 const Score = styled.h1``;
 
-const CountDown = styled.div``;
-
 const CanvasContainer = styled.div`
-  outline: 2px solid rgb(134, 154, 189);
+  outline: 3px solid rgb(200, 200, 200);
 `;
 
 const Row = styled.div`
@@ -43,17 +41,31 @@ const Row = styled.div`
 const Cell = styled.div`
   width: 35px;
   height: 35px;
-  outline: 1px solid rgb(134, 154, 189);
   display: inline-block;
+  border-radius: 25%;
 
-  &.cell-green {
-    background-color: green;
+  &.cell-snake {
+    background-image: linear-gradient(
+      to right,
+      rgba(44, 204, 195, 0.5),
+      rgba(44, 204, 195, 1)
+    );
   }
-  &.cell-red {
-    background-color: red;
+  &.cell-apple {
+    background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.5),
+      rgba(230, 5, 118, 1)
+    );
+    border-radius: 50%;
   }
-  &.cell-purple {
-    background-color: purple;
+  &.cell-reverseApple {
+    background-image: linear-gradient(
+      to right,
+      rgba(250, 205, 61, 0.5),
+      rgba(86, 38, 196, 1)
+    );
+    border-radius: 50%;
   }
 `;
 
@@ -217,14 +229,14 @@ const Canvas: FC<ICanvas> = ({
 
     if (cellValue === appleCell) {
       if (reverseApple) {
-        className = "cell-purple";
+        className = "cell-reverseApple";
       } else {
-        className = "cell-red";
+        className = "cell-apple";
       }
     }
 
     if (snakeCells.has(cellValue)) {
-      className = "cell-green";
+      className = "cell-snake";
     }
     return className;
   };
@@ -240,6 +252,7 @@ const Canvas: FC<ICanvas> = ({
             reverseApple,
             snakeCells
           );
+
           return <Cell key={cellIndex} className={className} />;
         })}
       </Row>
@@ -249,10 +262,8 @@ const Canvas: FC<ICanvas> = ({
   return (
     <Container>
       <Score>Score: {score}</Score>
-      <CountDown>
-        <CanvasContainer>{mappedCanvas}</CanvasContainer>
-        {gameOver && <p>Sorry, your snake has died. Your score is {score}.</p>}
-      </CountDown>
+      {gameOver && <p>Sorry, your snake has died. Your score is {score}.</p>}
+      <CanvasContainer>{mappedCanvas}</CanvasContainer>
     </Container>
   );
 };
