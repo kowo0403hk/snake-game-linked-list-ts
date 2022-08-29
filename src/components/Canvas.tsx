@@ -24,13 +24,14 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  border: 2px solid white;
+  border-right: 4px solid black;
 `;
 
 const Score = styled.h1``;
 
 const CanvasContainer = styled.div`
-  outline: 3px solid rgb(200, 200, 200);
+  outline: 5px solid black;
+  box-shadow: 10px 10px rgb(80, 80, 80);
 `;
 
 const Row = styled.div`
@@ -46,15 +47,25 @@ const Cell = styled.div`
 
   &.cell-snake {
     background-image: linear-gradient(
-      to right,
-      rgba(44, 204, 195, 0.5),
-      rgba(44, 204, 195, 1)
+      to right top,
+      #069710,
+      #0ea730,
+      #16b64a,
+      #1dc661,
+      #25d679,
+      #2ade86,
+      #30e694,
+      #36eea1,
+      #3af1a7,
+      #3df3ae,
+      #42f6b4,
+      #46f8ba
     );
   }
   &.cell-apple {
     background-image: linear-gradient(
       to right,
-      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 1),
       rgba(230, 5, 118, 1)
     );
     border-radius: 50%;
@@ -62,7 +73,7 @@ const Cell = styled.div`
   &.cell-reverseApple {
     background-image: linear-gradient(
       to right,
-      rgba(250, 205, 61, 0.5),
+      rgba(250, 205, 61, 1),
       rgba(86, 38, 196, 1)
     );
     border-radius: 50%;

@@ -6,9 +6,19 @@ import PlayerBoard from "./components/PlayerBoard";
 
 const Container = styled.div`
   background-image: linear-gradient(
-    to right,
-    rgba(24, 24, 24, 0.6),
-    rgba(24, 24, 24, 1)
+    to right bottom,
+    #d16ba5,
+    #c777b9,
+    #ba83ca,
+    #aa8fd8,
+    #9a9ae1,
+    #8aa7ec,
+    #79b3f4,
+    #69bff8,
+    #52cffe,
+    #41dfff,
+    #46eefa,
+    #5ffbf1
   );
   text-align: center;
   min-height: 100vh;
@@ -16,7 +26,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 1vmin);
-  color: white;
+  color: black;
 `;
 
 interface IDifficulty {
@@ -43,7 +53,7 @@ const App: FC = () => {
 
   const [difficulty, setDifficulty] = useState<IDifficulty>({
     LEVEL: "NORMAL",
-    CANVAS_SIZE: 10,
+    CANVAS_SIZE: 14,
     REVERSE_PROB: 0.4,
   });
 

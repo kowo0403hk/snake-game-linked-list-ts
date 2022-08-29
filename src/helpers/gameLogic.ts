@@ -60,7 +60,7 @@ export const setNewAppleLocation = (
   setScore: React.Dispatch<React.SetStateAction<number>>,
   reverseProbability: number
 ) => {
-  const maxPossibleCellValue = CANVAS_SIZE * (CANVAS_SIZE + 2);
+  const maxPossibleCellValue = CANVAS_SIZE * (CANVAS_SIZE + 10);
 
   let nextAppleCell: number;
 
