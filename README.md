@@ -6,6 +6,10 @@ Similar to normal snake games, consuming an apple will grow the linked list. But
 
 Credits to [Clement Mihailescu](https://www.linkedin.com/in/clementmihailescu/) for the project idea.
 
+## Play it here!
+
+The application is deployed to heroku. [Click here](https://reverse-linked-list-snake.herokuapp.com/) to play.
+
 ## Screenshots
 
 Home:
