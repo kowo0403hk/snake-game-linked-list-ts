@@ -1,4 +1,23 @@
-# Getting Started with Create React App
+# Reverse Linked List Snake
+
+This is a mini snake game built with React and TypeScript. The application itself utilizes the Linked List data structure to form the body of the snake.
+
+Similar to normal snake games, consuming an apple will grow the linked list. But this game also has a special type of apple which will reverse your linked list snake and its facing direction.
+
+Credits to [Clement Mihailescu](https://www.linkedin.com/in/clementmihailescu/) for the project idea.
+
+## Screenshots
+
+Home:
+![Home](https://github.com/kowo0403hk/snake-game-linked-list-ts/blob/master/docs/Home.png?raw=true)
+
+Game Play - reverse apple:
+![Game Play - reverse apple](https://github.com/kowo0403hk/snake-game-linked-list-ts/blob/master/docs/Game%20Play%20-%20reversed%20apple.png?raw=true)
+
+Game Over:
+![Game Over](https://github.com/kowo0403hk/snake-game-linked-list-ts/blob/master/docs/Game%20Play%20-%20gameover.png?raw=true)
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -21,4 +21,4 @@
 
 8. [X] Score event
 
-9. [] Game start and game reset events
+9. [X] Game start and game reset events
